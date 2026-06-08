@@ -19,12 +19,18 @@ public class TodoService {
         return todoRepository.findAll();
     }
 
-    public void save(Todo todo) {
-        todoRepository.save(todo);
+     public Todo createTodo(
+        String title
+    ) {
+
+        Todo todo =
+            new Todo(title);
+
+        return todoRepository.save(todo);
     }
 
-    public void delete(Long id) {
-        todoRepository.delete(id);
+    public void deleteTodo(Long id) {
+        todoRepository.deleteById(id);
     }
 
 }

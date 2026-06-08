@@ -14,8 +14,6 @@ public class TodoController {
 
     private final TodoService service;
 
-    private Long nextId = 1L;
-
     public TodoController(TodoService service) {
         this.service = service;
     }
@@ -28,18 +26,15 @@ public class TodoController {
     @PostMapping
     public void createTodo(@RequestBody CreateTodoRequest requestBody) {
 
-        Todo todo = new Todo(
-                nextId++,
+        service.createTodo(
                 requestBody.getTitle());
-
-        this.service.save(todo);
 
     }
 
     @DeleteMapping("/{id}")
     public void deleteTodo(@PathVariable Long id) {
 
-        service.delete(id);
+        service.deleteTodo(id);
 
     }
 

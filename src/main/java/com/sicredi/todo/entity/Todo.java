@@ -1,15 +1,24 @@
 package com.sicredi.todo.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "todos")
 public class Todo {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
 
     public Todo() {
     }
 
-    public Todo(Long id, String title) {
-        this.id = id;
+    public Todo(String title) {
         this.title = title;
     }
 
