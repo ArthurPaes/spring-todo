@@ -1,9 +1,11 @@
 package com.sicredi.todo.exception;
 
 import java.time.Instant;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -23,5 +25,27 @@ public class GlobalExceptionHandler {
                 Instant.now());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body); // 404 + our clean body
+    }
+
+    // @Valid throws MethodArgumentNotValidException when a @RequestBody fails validation.
+    // Spring catches it and routes it here -> a clean 400 instead of the default leaky blob.
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiError> handleValidation(MethodArgumentNotValidException ex) {
+
+        // getBindingResult() holds the validation outcome;
+        // getFieldErrors() = one entry per field that failed.
+        List<String> errors = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
+                .toList();
+
+        ApiError body = new ApiError(
+                HttpStatus.BAD_REQUEST.value(), // 400
+                "Validation failed",            // generic summary; specifics live in 'errors'
+                Instant.now(),
+                errors);
+
+        return ResponseEntity.badRequest().body(body); // badRequest() == status(400)
     }
 }
