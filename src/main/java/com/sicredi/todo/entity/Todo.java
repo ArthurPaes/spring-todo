@@ -1,9 +1,12 @@
 package com.sicredi.todo.entity;
 
+import java.time.Instant;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Entity
@@ -14,12 +17,15 @@ public class Todo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
+    private Instant createdAt;
+    private Boolean completed;
 
     public Todo() {
     }
 
     public Todo(String title) {
         this.title = title;
+        this.completed = false;
     }
 
     public Long getId() {
@@ -36,6 +42,27 @@ public class Todo {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    @PrePersist
+    public void onCreate() { // no-arg, Hibernate calls this itself
+        this.createdAt = Instant.now();
+    }
+
+    public Boolean getCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(Boolean completed) {
+        this.completed = completed;
     }
 
 }
