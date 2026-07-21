@@ -19,6 +19,7 @@ public class Todo {
     private String title;
     private Instant createdAt;
     private Boolean completed;
+    private Integer priority;
 
     public Todo() {
     }
@@ -26,6 +27,7 @@ public class Todo {
     public Todo(String title) {
         this.title = title;
         this.completed = false;
+        this.priority = 0;
     }
 
     public Long getId() {
@@ -63,6 +65,14 @@ public class Todo {
 
     public void setCompleted(Boolean completed) {
         this.completed = completed;
+    }
+
+    public Integer getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Integer priority) {
+        this.priority = priority;
     }
 
 }

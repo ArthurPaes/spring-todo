@@ -12,7 +12,8 @@ public class TodoMapper {
                 todo.getId(),
                 todo.getTitle(),
                 todo.getCreatedAt(),
-                todo.getCompleted());
+                todo.getCompleted(),
+                todo.getPriority());
     }
 
 }

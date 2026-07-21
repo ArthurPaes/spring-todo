@@ -7,15 +7,17 @@ public class TodoResponse {
     private String title;
     private Instant createdAt;
     private Boolean completed;
+    private Integer priority;
 
     public TodoResponse() {
     }
 
-    public TodoResponse(Long id, String title, Instant createdAt, Boolean completed) {
+    public TodoResponse(Long id, String title, Instant createdAt, Boolean completed, Integer priority) {
         this.id = id;
         this.title = title;
         this.createdAt = createdAt;
         this.completed = completed;
+        this.priority = priority;
     }
 
     public Long getId() {
@@ -48,6 +50,14 @@ public class TodoResponse {
 
     public void setCompleted(Boolean completed) {
         this.completed = completed;
+    }
+
+    public Integer getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Integer priority) {
+        this.priority = priority;
     }
 
 }
