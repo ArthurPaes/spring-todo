@@ -8,16 +8,18 @@ public class TodoResponse {
     private Instant createdAt;
     private Boolean completed;
     private Integer priority;
+    private Instant dueDate;
 
     public TodoResponse() {
     }
 
-    public TodoResponse(Long id, String title, Instant createdAt, Boolean completed, Integer priority) {
+    public TodoResponse(Long id, String title, Instant createdAt, Boolean completed, Integer priority, Instant dueDate) {
         this.id = id;
         this.title = title;
         this.createdAt = createdAt;
         this.completed = completed;
         this.priority = priority;
+        this.dueDate = dueDate;
     }
 
     public Long getId() {
@@ -58,6 +60,14 @@ public class TodoResponse {
 
     public void setPriority(Integer priority) {
         this.priority = priority;
+    }
+
+    public Instant getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(Instant dueDate) {
+        this.dueDate = dueDate;
     }
 
 }

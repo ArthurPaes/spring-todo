@@ -20,6 +20,7 @@ public class Todo {
     private Instant createdAt;
     private Boolean completed;
     private Integer priority;
+    private Instant dueDate;
 
     public Todo() {
     }
@@ -73,6 +74,14 @@ public class Todo {
 
     public void setPriority(Integer priority) {
         this.priority = priority;
+    }
+
+    public Instant getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(Instant dueDate) {
+        this.dueDate = dueDate;
     }
 
 }
