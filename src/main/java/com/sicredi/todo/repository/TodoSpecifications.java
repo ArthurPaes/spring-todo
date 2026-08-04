@@ -20,4 +20,8 @@ public class TodoSpecifications {
         return (root, query, cb) ->
                 cb.like(cb.lower(root.get("title")), "%" + search.toLowerCase() + "%");
     }
+
+    public static Specification<Todo> hasOwner(Long userId) {
+        return (root, query, cb) -> cb.equal(root.get("owner").get("id"), userId);
+    }
 }

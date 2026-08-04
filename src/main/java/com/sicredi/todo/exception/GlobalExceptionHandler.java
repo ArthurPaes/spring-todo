@@ -27,6 +27,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body); // 404 + our clean body
     }
 
+    // Same pattern as handleNotFound above, for the other entity that can be "not found".
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ApiError> handleUserNotFound(UserNotFoundException ex) {
+
+        ApiError body = new ApiError(
+                HttpStatus.NOT_FOUND.value(),
+                ex.getMessage(),
+                Instant.now());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+
     // @Valid throws MethodArgumentNotValidException when a @RequestBody fails validation.
     // Spring catches it and routes it here -> a clean 400 instead of the default leaky blob.
     @ExceptionHandler(MethodArgumentNotValidException.class)
