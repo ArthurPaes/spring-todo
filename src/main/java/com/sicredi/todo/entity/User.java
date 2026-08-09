@@ -25,15 +25,18 @@ public class User {
 
     private String name;
 
+    private String password;
+
     @OneToMany(mappedBy = "owner")
     private List<Todo> todos = new ArrayList<>();
 
     public User() {
     }
 
-    public User(String email, String name) {
+    public User(String email, String name, String password) {
         this.email = email;
         this.name = name;
+        this.password = password;
     }
 
     public Long getId() {
@@ -58,6 +61,14 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public List<Todo> getTodos() {

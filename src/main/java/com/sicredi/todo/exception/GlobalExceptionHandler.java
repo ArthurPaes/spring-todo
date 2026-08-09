@@ -39,6 +39,20 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
 
+    // 409, not 404/400: the request is well-formed and the resource being
+    // referenced (the email) is fine on its own -- the problem is it CONFLICTS
+    // with a resource that already exists. That's exactly what 409 means.
+    @ExceptionHandler(EmailAlreadyInUseException.class)
+    public ResponseEntity<ApiError> handleEmailAlreadyInUse(EmailAlreadyInUseException ex) {
+
+        ApiError body = new ApiError(
+                HttpStatus.CONFLICT.value(),
+                ex.getMessage(),
+                Instant.now());
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
+    }
+
     // @Valid throws MethodArgumentNotValidException when a @RequestBody fails validation.
     // Spring catches it and routes it here -> a clean 400 instead of the default leaky blob.
     @ExceptionHandler(MethodArgumentNotValidException.class)
