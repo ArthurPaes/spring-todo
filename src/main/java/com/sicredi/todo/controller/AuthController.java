@@ -1,5 +1,7 @@
 package com.sicredi.todo.controller;
 
+import com.sicredi.todo.dto.LoginRequest;
+import com.sicredi.todo.dto.LoginResponse;
 import com.sicredi.todo.dto.RegisterRequest;
 import com.sicredi.todo.dto.UserResponse;
 import com.sicredi.todo.entity.User;
@@ -36,6 +38,15 @@ public class AuthController {
         UserResponse body = mapper.toResponse(created);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(body);
+    }
+
+    @Operation(summary = "Log in and receive a JWT")
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest requestBody) {
+
+        String token = service.login(requestBody);
+
+        return ResponseEntity.ok(new LoginResponse(token));
     }
 
 }

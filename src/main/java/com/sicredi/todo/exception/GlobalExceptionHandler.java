@@ -53,6 +53,20 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
     }
 
+    // 401: the request needed proof of identity and didn't provide valid proof.
+    // Same generic message whether the email didn't exist or the password was
+    // wrong -- see InvalidCredentialsException for why that's deliberate.
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ApiError> handleInvalidCredentials(InvalidCredentialsException ex) {
+
+        ApiError body = new ApiError(
+                HttpStatus.UNAUTHORIZED.value(),
+                ex.getMessage(),
+                Instant.now());
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+    }
+
     // @Valid throws MethodArgumentNotValidException when a @RequestBody fails validation.
     // Spring catches it and routes it here -> a clean 400 instead of the default leaky blob.
     @ExceptionHandler(MethodArgumentNotValidException.class)
