@@ -1,4 +1,4 @@
-package com.sicredi.todo.security;
+package com.sicredi.todo.security.filter;
 
 import com.sicredi.todo.entity.User;
 import com.sicredi.todo.repository.UserRepository;

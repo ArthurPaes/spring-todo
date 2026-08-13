@@ -13,6 +13,8 @@ import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,6 +49,15 @@ public class AuthController {
         String token = service.login(requestBody);
 
         return ResponseEntity.ok(new LoginResponse(token));
+    }
+
+    @Operation(summary = "Return the user the request's JWT belongs to")
+    @GetMapping("/me")
+    public ResponseEntity<UserResponse> me(@AuthenticationPrincipal User currentUser) {
+
+        UserResponse body = mapper.toResponse(currentUser);
+
+        return ResponseEntity.ok(body);
     }
 
 }
