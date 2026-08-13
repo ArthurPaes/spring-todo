@@ -1,11 +1,10 @@
 package com.sicredi.todo.service;
 
 import com.sicredi.todo.entity.Todo;
+import com.sicredi.todo.entity.User;
 import com.sicredi.todo.exception.TodoNotFoundException;
-import com.sicredi.todo.exception.UserNotFoundException;
 import com.sicredi.todo.repository.TodoRepository;
 import com.sicredi.todo.repository.TodoSpecifications;
-import com.sicredi.todo.repository.UserRepository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,35 +15,14 @@ import org.springframework.stereotype.Service;
 public class TodoService {
 
     private final TodoRepository todoRepository;
-    private final UserRepository userRepository;
 
-    public TodoService(TodoRepository todoRepository, UserRepository userRepository) {
+    public TodoService(TodoRepository todoRepository) {
         this.todoRepository = todoRepository;
-        this.userRepository = userRepository;
     }
 
-    public Page<Todo> findAll(Pageable pageable, Boolean completed, String search) {
+    public Page<Todo> findByOwner(User owner, Pageable pageable, Boolean completed, String search) {
 
-        Specification<Todo> spec = Specification.unrestricted(); // "no condition yet" -- matches everything
-
-        if (completed != null) {
-            spec = spec.and(TodoSpecifications.hasCompleted(completed));
-        }
-
-        if (search != null && !search.isBlank()) {
-            spec = spec.and(TodoSpecifications.titleContains(search));
-        }
-
-        return todoRepository.findAll(spec, pageable);
-    }
-
-    public Page<Todo> findByOwner(Long userId, Pageable pageable, Boolean completed, String search) {
-
-        if (!userRepository.existsById(userId)) {
-            throw new UserNotFoundException(userId);
-        }
-
-        Specification<Todo> spec = TodoSpecifications.hasOwner(userId);
+        Specification<Todo> spec = TodoSpecifications.hasOwner(owner.getId());
 
         if (completed != null) {
             spec = spec.and(TodoSpecifications.hasCompleted(completed));
@@ -58,20 +36,19 @@ public class TodoService {
     }
 
 
-    public Todo createTodo(
-            String title) {
+    public Todo createTodo(String title, User owner) {
 
-        Todo todo = new Todo(title);
+        Todo todo = new Todo(title, owner);
 
         return todoRepository.save(todo);
     }
 
-    public void deleteTodo(Long id) {
-        if (!todoRepository.existsById(id)) {
-            throw new TodoNotFoundException(id);
-        }
+    public void deleteTodo(Long id, User owner) {
 
-        todoRepository.deleteById(id);
+        Todo todo = todoRepository.findByIdAndOwnerId(id, owner.getId())
+                .orElseThrow(() -> new TodoNotFoundException(id));
+
+        todoRepository.delete(todo);
     }
 
 }

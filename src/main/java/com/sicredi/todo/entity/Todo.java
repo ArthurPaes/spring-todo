@@ -24,15 +24,16 @@ public class Todo {
     private Boolean completed;
     private Integer priority;
     private Instant dueDate;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User owner;
 
     public Todo() {
     }
 
-    public Todo(String title) {
+    public Todo(String title, User owner) {
         this.title = title;
+        this.owner = owner;
         this.completed = false;
         this.priority = 0;
     }

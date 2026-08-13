@@ -4,6 +4,7 @@ import com.sicredi.todo.dto.CreateTodoRequest;
 import com.sicredi.todo.dto.PagedResponse;
 import com.sicredi.todo.dto.TodoResponse;
 import com.sicredi.todo.entity.Todo;
+import com.sicredi.todo.entity.User;
 import com.sicredi.todo.mapper.TodoMapper;
 import com.sicredi.todo.service.TodoService;
 
@@ -16,6 +17,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -36,8 +38,9 @@ public class TodoController {
     public ResponseEntity<PagedResponse<TodoResponse>> getTodos(
             @ParameterObject Pageable pageable,
             @RequestParam(required = false) Boolean completed,
-            @RequestParam(required = false) String search) {
-        Page<TodoResponse> body = service.findAll(pageable, completed, search)
+            @RequestParam(required = false) String search,
+            @AuthenticationPrincipal User currentUser) {
+        Page<TodoResponse> body = service.findByOwner(currentUser, pageable, completed, search)
                 .map(this.mapper::toResponse);
 
         return ResponseEntity.ok(PagedResponse.from(body));
@@ -46,9 +49,11 @@ public class TodoController {
 
     @Operation(summary = "Create a new todo")
     @PostMapping
-    public ResponseEntity<TodoResponse> createTodo(@Valid @RequestBody CreateTodoRequest requestBody) {
+    public ResponseEntity<TodoResponse> createTodo(
+            @Valid @RequestBody CreateTodoRequest requestBody,
+            @AuthenticationPrincipal User currentUser) {
 
-        Todo created = service.createTodo(requestBody.getTitle());
+        Todo created = service.createTodo(requestBody.getTitle(), currentUser);
         TodoResponse body = mapper.toResponse(created);
 
         URI location = ServletUriComponentsBuilder
@@ -62,9 +67,11 @@ public class TodoController {
 
     @Operation(summary = "Delete a todo by id")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTodo(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteTodo(
+            @PathVariable Long id,
+            @AuthenticationPrincipal User currentUser) {
 
-        service.deleteTodo(id);
+        service.deleteTodo(id, currentUser);
 
         return ResponseEntity.noContent().build();
     }
